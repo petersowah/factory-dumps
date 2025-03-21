@@ -1,0 +1,7 @@
+ignore:
+  - 'bin/**/*'
+  - 'db/**/*'
+  - 'tmp/**/*'
+  - 'vendor/**/*'
+
+ruby_version: 2.6 
