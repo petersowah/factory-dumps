@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    factory-export (0.1.0)
+    factory-dumps (0.1.0)
       csv (>= 3.0)
       factory_bot (>= 6.0)
       rails (>= 6.0)
@@ -131,21 +131,7 @@ GEM
       net-protocol
     nio4r (2.7.4)
     nkf (0.2.0)
-    nokogiri (1.18.5-aarch64-linux-gnu)
-      racc (~> 1.4)
-    nokogiri (1.18.5-aarch64-linux-musl)
-      racc (~> 1.4)
-    nokogiri (1.18.5-arm-linux-gnu)
-      racc (~> 1.4)
-    nokogiri (1.18.5-arm-linux-musl)
-      racc (~> 1.4)
     nokogiri (1.18.5-arm64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.18.5-x86_64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.18.5-x86_64-linux-gnu)
-      racc (~> 1.4)
-    nokogiri (1.18.5-x86_64-linux-musl)
       racc (~> 1.4)
     parallel (1.26.3)
     parser (3.3.7.2)
@@ -283,7 +269,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord (~> 7.0)
-  factory-export!
+  factory-dumps!
   factory_bot (~> 6.0)
   rake (~> 13.0)
   rspec (~> 3.0)

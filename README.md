@@ -1,9 +1,9 @@
-# Factory Export
+# Factory Dumps
 
-[![Gem Version](https://badge.fury.io/rb/factory-export.svg)](https://badge.fury.io/rb/factory-export)
+[![Gem Version](https://badge.fury.io/rb/factory-dumps.svg)](https://badge.fury.io/rb/factory-dumps)
 [![Standard](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/standardrb/standard)
 
-Factory Export is a Ruby gem that allows you to easily export your FactoryBot factory data to CSV and Excel formats. It's perfect for generating sample data, creating test datasets, or exporting factory-generated records for external use.
+Factory Dumps is a Ruby gem that allows you to easily export your FactoryBot factory data to CSV and Excel formats. It's perfect for generating sample data, creating test datasets, or exporting factory-generated records for external use.
 
 ## Features
 
@@ -19,7 +19,7 @@ Factory Export is a Ruby gem that allows you to easily export your FactoryBot fa
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'factory-export'
+gem 'factory-dumps'
 ```
 
 And then execute:
@@ -31,7 +31,7 @@ $ bundle install
 Or install it yourself as:
 
 ```bash
-$ gem install factory-export
+$ gem install factory-dumps
 ```
 
 ## Usage
@@ -40,11 +40,11 @@ $ gem install factory-export
 
 ```ruby
 # Export 5 users to CSV
-csv_data = FactoryExport.export_to_csv(:user, count: 5)
+csv_data = FactoryDumps.export_to_csv(:user, count: 5)
 File.write("users.csv", csv_data)
 
 # Export 10 products to Excel
-filename = FactoryExport.export_to_excel(:product, count: 10)
+filename = FactoryDumps.export_to_excel(:product, count: 10)
 # => Creates "export.xls" with 10 products
 ```
 
@@ -54,13 +54,13 @@ You can specify which attributes you want to export:
 
 ```ruby
 # Export only name and email attributes
-csv_data = FactoryExport.export_to_csv(:user, 
+csv_data = FactoryDumps.export_to_csv(:user, 
   count: 5,
   attributes: [:name, :email]
 )
 
 # Export specific attributes to Excel with custom filename
-filename = FactoryExport.export_to_excel(:user,
+filename = FactoryDumps.export_to_excel(:user,
   count: 5,
   attributes: [:name, :email, :created_at],
   filename: "users_export.xls"
@@ -76,14 +76,14 @@ class ExportsController < ApplicationController
   def create
     respond_to do |format|
       format.csv do
-        csv_data = FactoryExport.export_to_csv(:user, count: params[:count])
+        csv_data = FactoryDumps.export_to_csv(:user, count: params[:count])
         send_data csv_data,
           filename: "users_#{Time.current.to_i}.csv",
           type: 'text/csv'
       end
 
       format.xls do
-        filename = FactoryExport.export_to_excel(:user, 
+        filename = FactoryDumps.export_to_excel(:user, 
           count: params[:count],
           filename: "users_#{Time.current.to_i}.xls"
         )
@@ -112,7 +112,7 @@ FactoryBot.define do
 end
 
 # In your code
-csv_data = FactoryExport.export_to_csv(:user, count: 5)
+csv_data = FactoryDumps.export_to_csv(:user, count: 5)
 # => Generates CSV with name, email, age, and created_at columns
 ```
 
@@ -121,8 +121,8 @@ csv_data = FactoryExport.export_to_csv(:user, count: 5)
 The gem works out of the box with no configuration needed. However, you can customize the default Excel filename:
 
 ```ruby
-# config/initializers/factory_export.rb
-FactoryExport.configure do |config|
+# config/initializers/factory_dumps.rb
+FactoryDumps.configure do |config|
   config.default_excel_filename = "my_export.xls"
 end
 ```
@@ -151,4 +151,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Factory Export project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](CODE_OF_CONDUCT.md). 
+Everyone interacting in the Factory Dumps project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](CODE_OF_CONDUCT.md). 

@@ -1,6 +1,6 @@
 require "spec_helper"
 
-RSpec.describe FactoryExport do
+RSpec.describe FactoryDumps do
   describe ".export_to_csv" do
     it "exports factory data to CSV" do
       csv_data = described_class.export_to_csv(:user, count: 2)

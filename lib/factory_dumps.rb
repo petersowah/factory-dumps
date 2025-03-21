@@ -1,8 +1,8 @@
-require "factory_export/version"
-require "factory_export/exporter"
-require "factory_export/railtie" if defined?(Rails)
+require "factory_dumps/version"
+require "factory_dumps/exporter"
+require "factory_dumps/railtie" if defined?(Rails)
 
-module FactoryExport
+module FactoryDumps
   class Error < StandardError; end
 
   def self.export_to_csv(factory_name, count: 1, attributes: nil)

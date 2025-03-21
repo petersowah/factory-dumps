@@ -1,7 +1,7 @@
 require "spec_helper"
 require "csv"
 
-RSpec.describe FactoryExport::Exporter do
+RSpec.describe FactoryDumps::Exporter do
   let(:exporter) { described_class.new(:user) }
 
   describe "#to_csv" do

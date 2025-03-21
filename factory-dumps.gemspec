@@ -1,12 +1,12 @@
 Gem::Specification.new do |spec|
-  spec.name = "factory-export"
+  spec.name = "factory-dumps"
   spec.version = "0.1.0"
   spec.authors = ["Peter Sowah"]
   spec.email = ["peter.sowah@example.com"]
 
   spec.summary = "Export factory data to CSV and Excel formats"
   spec.description = "A Rails gem that allows you to easily export factory data to CSV and Excel formats using your existing factories"
-  spec.homepage = "https://github.com/yourusername/factory-export"
+  spec.homepage = "https://github.com/petersowah/factory-dumps"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
 

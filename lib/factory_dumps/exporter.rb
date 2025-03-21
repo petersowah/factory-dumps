@@ -1,7 +1,7 @@
 require "csv"
 require "writeexcel"
 
-module FactoryExport
+module FactoryDumps
   class Exporter
     def initialize(factory_name)
       @factory_name = factory_name

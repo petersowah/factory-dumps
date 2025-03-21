@@ -1,4 +1,4 @@
-require "factory_export"
+require "factory_dumps"
 require "active_record"
 require "factory_bot"
 

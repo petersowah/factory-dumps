@@ -1,8 +1,8 @@
-module FactoryExport
+module FactoryDumps
   class Railtie < Rails::Railtie
-    initializer "factory_export" do
+    initializer "factory_dumps" do
       ActiveSupport.on_load(:active_record) do
-        extend FactoryExport
+        extend FactoryDumps
       end
     end
   end
