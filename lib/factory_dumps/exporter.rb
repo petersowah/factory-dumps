@@ -5,8 +5,14 @@ require "factory_bot"
 module FactoryDumps
   class Exporter
     def initialize(factory_name)
-      @factory_name = factory_name
-      @factory = FactoryBot.factories.find(@factory_name)
+      @factory_name = factory_name.to_sym
+      @factory = nil
+      FactoryBot.factories.each do |factory|
+        if factory.name == @factory_name
+          @factory = factory
+          break
+        end
+      end
       raise KeyError, "Factory '#{factory_name}' not found" unless @factory
     end
 
