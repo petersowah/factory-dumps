@@ -5,14 +5,11 @@ RSpec.describe FactoryDumps do
   let(:test_dir) { "tmp/test_dumps" }
 
   before(:each) do
-    # Reset configuration before each test
     FactoryDumps.configuration = nil
-    # Clean up test directory
     FileUtils.rm_rf(test_dir) if Dir.exist?(test_dir)
   end
 
   after(:each) do
-    # Clean up test directory
     FileUtils.rm_rf(test_dir) if Dir.exist?(test_dir)
   end
 

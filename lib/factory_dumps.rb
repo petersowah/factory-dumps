@@ -19,13 +19,11 @@ module FactoryDumps
     end
 
     def dump(factory_name, count: 1, attributes: nil, excel_filename: nil)
-      # Generate CSV dump
       csv_data = export_to_csv(factory_name, count: count, attributes: attributes)
       ensure_directory(configuration&.csv_directory)
       csv_filepath = File.join(configuration&.csv_directory, "#{factory_name}.csv")
       File.write(csv_filepath, csv_data)
 
-      # Generate Excel dump
       excel_filename ||= "#{factory_name}.xls"
       export_to_excel(factory_name, count: count, attributes: attributes, filename: excel_filename)
 

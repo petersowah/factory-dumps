@@ -35,12 +35,10 @@ module FactoryDumps
       workbook = WriteExcel.new(filename)
       worksheet = workbook.add_worksheet
 
-      # Write headers
       attributes.each_with_index do |attr, col|
         worksheet.write(0, col, attr.to_s)
       end
 
-      # Write data
       records.each_with_index do |record, row|
         attributes.each_with_index do |attr, col|
           worksheet.write(row + 1, col, record.send(attr))
