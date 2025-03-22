@@ -47,29 +47,37 @@ RSpec.describe FactoryDumps::Exporter do
   end
 
   describe "#to_excel" do
+    let(:test_dir) { "tmp/test_dumps" }
+    let(:test_file) { File.join(test_dir, "test.xls") }
+
+    before(:each) do
+      FileUtils.mkdir_p(test_dir)
+    end
+
+    after(:each) do
+      FileUtils.rm_rf(test_dir)
+    end
+
     context "with default attributes" do
       it "exports all attributes to Excel" do
-        filename = exporter.to_excel(3)
-        expect(File.exist?(filename)).to be true
-
-        # Note: We can't easily read the Excel file in tests
-        # So we just verify it was created with the correct name
-        expect(filename).to match(/export\.xls/)
+        exporter.to_excel(3, nil, test_file)
+        expect(File.exist?(test_file)).to be true
+        expect(File.size(test_file)).to be > 0
       end
     end
 
     context "with specific attributes" do
       it "exports only specified attributes" do
-        filename = exporter.to_excel(2, [:name, :email], "test_users.xls")
-        expect(File.exist?(filename)).to be true
-        expect(filename).to eq("test_users.xls")
+        exporter.to_excel(2, [:name, :email], test_file)
+        expect(File.exist?(test_file)).to be true
+        expect(File.size(test_file)).to be > 0
       end
     end
 
     context "with invalid attributes" do
       it "raises an error for invalid attributes" do
         expect {
-          exporter.to_excel(1, [:invalid_attribute])
+          exporter.to_excel(1, [:invalid_attribute], test_file)
         }.to raise_error(NoMethodError)
       end
     end

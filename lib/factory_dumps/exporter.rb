@@ -1,5 +1,6 @@
 require "csv"
 require "writeexcel"
+require "factory_bot"
 
 module FactoryDumps
   class Exporter

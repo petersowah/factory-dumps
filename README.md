@@ -13,6 +13,8 @@ Factory Dumps is a Ruby gem that allows you to easily export your FactoryBot fac
 - Generate multiple records at once
 - Automatic attribute detection from factory definitions
 - Rails integration out of the box
+- Automatic creation of dumps directory
+- Configurable output directory
 
 ## Installation
 
@@ -34,18 +36,48 @@ Or install it yourself as:
 $ gem install factory-dumps
 ```
 
+## Setup
+
+1. Create your factories in `spec/factories/`:
+
+```ruby
+# spec/factories/users.rb
+FactoryBot.define do
+  factory :user do
+    sequence(:name) { |n| "User #{n}" }
+    sequence(:email) { |n| "user#{n}@example.com" }
+    password { "password123" }
+    created_at { Time.current }
+    updated_at { Time.current }
+  end
+end
+```
+
+2. (Optional) Configure Factory Dumps:
+
+```ruby
+# config/initializers/factory_dumps.rb
+FactoryDumps.configure do |config|
+  config.dumps_directory = "db/dumps"  # Default directory for exports
+  config.default_excel_filename = "export.xls"  # Default Excel filename
+end
+```
+
+Note: FactoryBot is included as a dependency, so you don't need to add it separately to your Gemfile.
+
 ## Usage
 
 ### Basic Usage
 
 ```ruby
-# Export 5 users to CSV
-csv_data = FactoryDumps.export_to_csv(:user, count: 5)
-File.write("users.csv", csv_data)
+# Export 5 users to CSV (saves to db/dumps/users.csv)
+FactoryDumps.export_to_csv(:user, count: 5, filename: "users.csv")
 
-# Export 10 products to Excel
-filename = FactoryDumps.export_to_excel(:product, count: 10)
-# => Creates "export.xls" with 10 products
+# Export 10 products to Excel (saves to db/dumps/export.xls)
+FactoryDumps.export_to_excel(:product, count: 10)
+
+# Export with custom filename (saves to db/dumps/products.xls)
+FactoryDumps.export_to_excel(:product, count: 10, filename: "products.xls")
 ```
 
 ### Specifying Attributes
@@ -53,14 +85,15 @@ filename = FactoryDumps.export_to_excel(:product, count: 10)
 You can specify which attributes you want to export:
 
 ```ruby
-# Export only name and email attributes
-csv_data = FactoryDumps.export_to_csv(:user, 
+# Export only name and email attributes to CSV
+FactoryDumps.export_to_csv(:user, 
   count: 5,
-  attributes: [:name, :email]
+  attributes: [:name, :email],
+  filename: "users.csv"
 )
 
-# Export specific attributes to Excel with custom filename
-filename = FactoryDumps.export_to_excel(:user,
+# Export specific attributes to Excel
+FactoryDumps.export_to_excel(:user,
   count: 5,
   attributes: [:name, :email, :created_at],
   filename: "users_export.xls"
@@ -76,18 +109,21 @@ class ExportsController < ApplicationController
   def create
     respond_to do |format|
       format.csv do
-        csv_data = FactoryDumps.export_to_csv(:user, count: params[:count])
-        send_data csv_data,
+        filepath = FactoryDumps.export_to_csv(:user, 
+          count: params[:count],
+          filename: "users_#{Time.current.to_i}.csv"
+        )
+        send_file filepath,
           filename: "users_#{Time.current.to_i}.csv",
           type: 'text/csv'
       end
 
       format.xls do
-        filename = FactoryDumps.export_to_excel(:user, 
+        filepath = FactoryDumps.export_to_excel(:user, 
           count: params[:count],
           filename: "users_#{Time.current.to_i}.xls"
         )
-        send_file filename,
+        send_file filepath,
           type: 'application/vnd.ms-excel',
           disposition: 'attachment'
       end
@@ -96,34 +132,15 @@ class ExportsController < ApplicationController
 end
 ```
 
-### Example Factory
-
-The gem works with any FactoryBot factory. Here's an example:
-
-```ruby
-# In your factories.rb or user_factory.rb
-FactoryBot.define do
-  factory :user do
-    sequence(:name) { |n| "User #{n}" }
-    sequence(:email) { |n| "user#{n}@example.com" }
-    age { rand(18..65) }
-    created_at { Time.current }
-  end
-end
-
-# In your code
-csv_data = FactoryDumps.export_to_csv(:user, count: 5)
-# => Generates CSV with name, email, age, and created_at columns
-```
-
 ## Configuration
 
-The gem works out of the box with no configuration needed. However, you can customize the default Excel filename:
+The gem works out of the box with no configuration needed. However, you can customize the following options:
 
 ```ruby
 # config/initializers/factory_dumps.rb
 FactoryDumps.configure do |config|
-  config.default_excel_filename = "my_export.xls"
+  config.dumps_directory = "db/dumps"  # Directory where exports are saved
+  config.default_excel_filename = "export.xls"  # Default Excel filename
 end
 ```
 

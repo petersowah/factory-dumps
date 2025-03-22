@@ -1,6 +1,7 @@
 require "factory_dumps"
 require "active_record"
 require "factory_bot"
+require "fileutils"
 
 # Define test model
 class User < ActiveRecord::Base
@@ -34,7 +35,8 @@ RSpec.configure do |config|
   end
 
   config.after(:suite) do
-    # Clean up any generated files
+    # Clean up any generated files and directories
     Dir.glob("*.xls").each { |f| File.delete(f) }
+    FileUtils.rm_rf("tmp/test_dumps") if Dir.exist?("tmp/test_dumps")
   end
 end

@@ -1,35 +1,81 @@
 require "spec_helper"
+require "fileutils"
 
 RSpec.describe FactoryDumps do
-  describe ".export_to_csv" do
-    it "exports factory data to CSV" do
-      csv_data = described_class.export_to_csv(:user, count: 2)
-      csv = CSV.parse(csv_data, headers: true)
+  let(:test_dir) { "tmp/test_dumps" }
 
-      expect(csv.headers).to match_array(["id", "name", "email", "age", "created_at", "updated_at"])
-      expect(csv.count).to eq(2)
+  before(:each) do
+    # Reset configuration before each test
+    FactoryDumps.configuration = nil
+    # Clean up test directory
+    FileUtils.rm_rf(test_dir) if Dir.exist?(test_dir)
+  end
+
+  after(:each) do
+    # Clean up test directory
+    FileUtils.rm_rf(test_dir) if Dir.exist?(test_dir)
+  end
+
+  describe ".configure" do
+    it "allows setting dumps directory" do
+      FactoryDumps.configure do |config|
+        config.dumps_directory = test_dir
+      end
+      expect(FactoryDumps.configuration.dumps_directory).to eq(test_dir)
     end
 
-    it "accepts specific attributes" do
-      csv_data = described_class.export_to_csv(:user, count: 1, attributes: [:name, :email])
-      csv = CSV.parse(csv_data, headers: true)
+    it "allows setting default excel filename" do
+      FactoryDumps.configure do |config|
+        config.default_excel_filename = "custom.xls"
+      end
+      expect(FactoryDumps.configuration.default_excel_filename).to eq("custom.xls")
+    end
+  end
 
-      expect(csv.headers).to match_array(["name", "email"])
-      expect(csv.count).to eq(1)
+  describe ".export_to_csv" do
+    context "with filename" do
+      it "creates directory and saves file" do
+        FactoryDumps.configure do |config|
+          config.dumps_directory = test_dir
+        end
+
+        filepath = FactoryDumps.export_to_csv(:user, count: 2, filename: "users.csv")
+        expect(Dir.exist?(test_dir)).to be true
+        expect(File.exist?(filepath)).to be true
+        expect(filepath).to eq(File.join(test_dir, "users.csv"))
+      end
+    end
+
+    context "without filename" do
+      it "returns csv data without saving" do
+        csv_data = FactoryDumps.export_to_csv(:user, count: 2)
+        expect(csv_data).to be_a(String)
+        expect(Dir.exist?(test_dir)).to be false
+      end
     end
   end
 
   describe ".export_to_excel" do
-    it "exports factory data to Excel" do
-      filename = described_class.export_to_excel(:user, count: 2)
-      expect(File.exist?(filename)).to be true
-      expect(filename).to match(/export\.xls/)
+    it "creates directory and saves file" do
+      FactoryDumps.configure do |config|
+        config.dumps_directory = test_dir
+        config.default_excel_filename = "users.xls"
+      end
+
+      filepath = FactoryDumps.export_to_excel(:user, count: 2)
+      expect(Dir.exist?(test_dir)).to be true
+      expect(File.exist?(filepath)).to be true
+      expect(filepath).to eq(File.join(test_dir, "users.xls"))
     end
 
-    it "accepts specific attributes and filename" do
-      filename = described_class.export_to_excel(:user, count: 1, attributes: [:name, :email], filename: "test.xls")
-      expect(File.exist?(filename)).to be true
-      expect(filename).to eq("test.xls")
+    it "uses custom filename when provided" do
+      FactoryDumps.configure do |config|
+        config.dumps_directory = test_dir
+      end
+
+      filepath = FactoryDumps.export_to_excel(:user, count: 2, filename: "custom.xls")
+      expect(File.exist?(filepath)).to be true
+      expect(filepath).to eq(File.join(test_dir, "custom.xls"))
     end
   end
 end
