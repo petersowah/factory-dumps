@@ -13,7 +13,8 @@ Factory Dumps is a Ruby gem that allows you to easily export your FactoryBot fac
 - Generate multiple records at once
 - Automatic attribute detection from factory definitions
 - Rails integration out of the box
-- Automatic creation of dumps directory
+- Automatic creation of organized dumps directory structure
+- Separate directories for CSV and Excel exports
 - Configurable output directory
 
 ## Installation
@@ -58,7 +59,7 @@ end
 ```ruby
 # config/initializers/factory_dumps.rb
 FactoryDumps.configure do |config|
-  config.dumps_directory = "db/dumps"  # Default directory for exports
+  config.dumps_directory = "db/dumps"  # Base directory for exports
   config.default_excel_filename = "export.xls"  # Default Excel filename
 end
 ```
@@ -70,13 +71,13 @@ Note: FactoryBot is included as a dependency, so you don't need to add it separa
 ### Basic Usage
 
 ```ruby
-# Export 5 users to CSV (saves to db/dumps/users.csv)
+# Export 5 users to CSV (saves to db/dumps/csv/users.csv)
 FactoryDumps.export_to_csv(:user, count: 5, filename: "users.csv")
 
-# Export 10 products to Excel (saves to db/dumps/export.xls)
+# Export 10 products to Excel (saves to db/dumps/excel/export.xls)
 FactoryDumps.export_to_excel(:product, count: 10)
 
-# Export with custom filename (saves to db/dumps/products.xls)
+# Export with custom filename (saves to db/dumps/excel/products.xls)
 FactoryDumps.export_to_excel(:product, count: 10, filename: "products.xls")
 ```
 
@@ -139,7 +140,7 @@ The gem works out of the box with no configuration needed. However, you can cust
 ```ruby
 # config/initializers/factory_dumps.rb
 FactoryDumps.configure do |config|
-  config.dumps_directory = "db/dumps"  # Directory where exports are saved
+  config.dumps_directory = "db/dumps"  # Base directory for exports (creates csv/ and excel/ subdirectories)
   config.default_excel_filename = "export.xls"  # Default Excel filename
 end
 ```

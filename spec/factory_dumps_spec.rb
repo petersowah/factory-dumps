@@ -22,6 +22,8 @@ RSpec.describe FactoryDumps do
         config.dumps_directory = test_dir
       end
       expect(FactoryDumps.configuration.dumps_directory).to eq(test_dir)
+      expect(FactoryDumps.configuration.csv_directory).to eq(File.join(test_dir, "csv"))
+      expect(FactoryDumps.configuration.excel_directory).to eq(File.join(test_dir, "excel"))
     end
 
     it "allows setting default excel filename" do
@@ -34,15 +36,15 @@ RSpec.describe FactoryDumps do
 
   describe ".export_to_csv" do
     context "with filename" do
-      it "creates directory and saves file" do
+      it "creates csv directory and saves file" do
         FactoryDumps.configure do |config|
           config.dumps_directory = test_dir
         end
 
         filepath = FactoryDumps.export_to_csv(:user, count: 2, filename: "users.csv")
-        expect(Dir.exist?(test_dir)).to be true
+        expect(Dir.exist?(File.join(test_dir, "csv"))).to be true
         expect(File.exist?(filepath)).to be true
-        expect(filepath).to eq(File.join(test_dir, "users.csv"))
+        expect(filepath).to eq(File.join(test_dir, "csv", "users.csv"))
       end
     end
 
@@ -56,16 +58,16 @@ RSpec.describe FactoryDumps do
   end
 
   describe ".export_to_excel" do
-    it "creates directory and saves file" do
+    it "creates excel directory and saves file" do
       FactoryDumps.configure do |config|
         config.dumps_directory = test_dir
         config.default_excel_filename = "users.xls"
       end
 
       filepath = FactoryDumps.export_to_excel(:user, count: 2)
-      expect(Dir.exist?(test_dir)).to be true
+      expect(Dir.exist?(File.join(test_dir, "excel"))).to be true
       expect(File.exist?(filepath)).to be true
-      expect(filepath).to eq(File.join(test_dir, "users.xls"))
+      expect(filepath).to eq(File.join(test_dir, "excel", "users.xls"))
     end
 
     it "uses custom filename when provided" do
@@ -75,7 +77,7 @@ RSpec.describe FactoryDumps do
 
       filepath = FactoryDumps.export_to_excel(:user, count: 2, filename: "custom.xls")
       expect(File.exist?(filepath)).to be true
-      expect(filepath).to eq(File.join(test_dir, "custom.xls"))
+      expect(filepath).to eq(File.join(test_dir, "excel", "custom.xls"))
     end
   end
 end
